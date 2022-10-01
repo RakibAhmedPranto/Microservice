@@ -1,0 +1,8 @@
+com\rakib\inventory\InventoryApplication.class
+com\rakib\inventory\service\InventoryServiceImpl.class
+com\rakib\inventory\dto\InventoryResponse.class
+com\rakib\inventory\dto\InventoryResponse$InventoryResponseBuilder.class
+com\rakib\inventory\rpository\InventoryRepository.class
+com\rakib\inventory\controller\InventoryController.class
+com\rakib\inventory\model\Inventory.class
+com\rakib\inventory\service\InventoryService.class
