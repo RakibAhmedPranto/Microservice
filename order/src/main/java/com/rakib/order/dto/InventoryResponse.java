@@ -1,4 +1,4 @@
-package com.rakib.inventory.dto;
+package com.rakib.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
