@@ -26,9 +26,6 @@ public class InventoryServiceImpl implements InventoryService{
     @Override
     @Transactional(readOnly = true)
     public List<InventoryResponse> isInStock(List<String> skuCode) {
-        List<Inventory> inventoryList = this.inventoryRepository.findBySkuCodeIn(skuCode);
-        return inventoryList.stream()
-            .map(inventory -> this.modelMapper.map(inventory, InventoryResponse.class)).collect(
-                Collectors.toList());
+        return this.inventoryRepository.findInventoryResponse(skuCode);
     }
 }
