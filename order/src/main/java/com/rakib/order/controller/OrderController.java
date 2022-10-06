@@ -3,6 +3,10 @@ package com.rakib.order.controller;
 import com.rakib.order.dto.OrderRequest;
 import com.rakib.order.dto.OrderResponse;
 import com.rakib.order.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +24,15 @@ public class OrderController {
     private OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest){
+    @CircuitBreaker(name = "inventory", fallbackMethod = "fallbackMethod")
+    @TimeLimiter(name = "inventory")
+    @Retry(name = "inventory")
+    public CompletableFuture<ResponseEntity<OrderResponse>> placeOrder(@RequestBody OrderRequest orderRequest){
         OrderResponse orderResponse = this.orderService.placeOrder(orderRequest);
-        return new ResponseEntity<OrderResponse>(orderResponse, HttpStatus.CREATED);
+        return CompletableFuture.supplyAsync(() -> new ResponseEntity<>(orderResponse,
+            HttpStatus.CREATED));
+    }
+    public CompletableFuture<String> fallbackMethod(OrderRequest orderRequest, RuntimeException runtimeException) {
+        return CompletableFuture.supplyAsync(() -> "Oops! Something went wrong, please order after some time!");
     }
 }
